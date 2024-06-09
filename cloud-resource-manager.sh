@@ -87,10 +87,11 @@ function select_option {
     cursor_blink_on
     return $selected
 }
+
 ORGANIZATIONS_LIST=$(gcloud organizations list)
-ORGANIZATION_ID=$(sed -n -e '/ID/ {s/.*: *//p;q}' <<<"$ORGANIZATIONS_LIST")
+ORGANIZATION_ID=$(awk 'NR==2 {print $2}' <<< "$ORGANIZATIONS_LIST")
 CURRENT_ACCOUNT=$(gcloud auth list)
-CURRENT_ACCOUNT_EMAIL=$(awk -F'ACCOUNT: ' '{print $2}' <<<"$CURRENT_ACCOUNT")
+CURRENT_ACCOUNT_EMAIL=$(awk '/\*/ {print $NF}' <<< "$CURRENT_ACCOUNT")
 CURRENT_ACCOUNT_EMAIL="${CURRENT_ACCOUNT_EMAIL//+([[:space:]])/}"
 FORMATTED_CURRENT_ACCOUNT_EMAIL="user:$CURRENT_ACCOUNT_EMAIL"
 
